@@ -4,7 +4,7 @@ class Character {
         this.htmlElments = htmlElments
     }
 
-    init(){
+    init() {
         this._renderPersonalInfo()
         this._renderSkills()
         this._renderLevels()
@@ -12,62 +12,96 @@ class Character {
         this._renderInventory()
     }
 
-    _renderPersonalInfo(){
+    _renderPersonalInfo() {
         document.querySelector(this.htmlElments.name).innerText = this.values.name
         document.querySelector(this.htmlElments.bg).innerText = this.values.background
         document.querySelector(this.htmlElments.user).innerText = this.values.user
         document.querySelector(this.htmlElments.avatar).innerHTML = `<img crossorigin="anonymous" src="${this.values.avatar}" alt="${this.values.name}">`
     }
 
-    get level(){
+    get level() {
         return Object.values(this.values.level).reduce(
             (previousValue, currentValue) => previousValue + currentValue
-          );
+        );
     }
 
-    _renderInventory(){
+    _renderInventory() {
         const items = Object.keys(this.values.inventory)
+        document.querySelectorAll(this.htmlElments.inventoryTotal).forEach(element => element.innerText = items.length)
         const renderedItems = items.map(index => {
             const item = this.values.inventory
             return `
             <tr>
                 <td>${item[index].name}</td>
-                <td>${item[index].type}</td>
-                <td>${item[index].damage === null ? `NA` : `${item[index].damage.qty}${item[index].damage.dice}${item[index].damage.mod !== 0 ? item[index].damage.mod : '' }`}</td>
+                <td><span class="tag is-link is-medium">${item[index].type}</span></td>
+                <td>${item[index].damage === null ? `-` : `<span class="tag is-medium">${item[index].damage}</span>`}</td>
+                <td>
+                    <button class="button is-danger remove-item-inventory" data-index="${index}">
+                        <span class="icon">
+                        <i class="fa-solid fa-trash-can"></i>
+                        </span>
+                    </button>
+                </td>
             </tr>
             `
         }).join('')
-        console.log(renderedItems)
         document.querySelector(this.htmlElments.tableInventory + ' tbody').innerHTML = renderedItems
+        setTimeout(() => {
+            const removeItemsBtn = document.querySelectorAll('.remove-item-inventory')
+            removeItemsBtn.forEach(btn => {
+                const indexToRemove = btn.dataset.index
+                btn.onclick = () => {
+                    delete this.values.inventory[indexToRemove]
+                    this._renderInventory()
+                }
+            })
+            this._controlInventory()
+        },100)
     }
 
-    _controlTabs(){
-        const currentActiveTab = document.querySelector(this.htmlElments.tabs + ' '+this.htmlElments.tabActive)
-        document.querySelector('#'+currentActiveTab.dataset.panel).style.display = 'block'
+    _controlInventory() {
+        const itemFieldElement = document.querySelector(this.htmlElments.inventoryItemField)
+        const typeFieldElement = document.querySelector(this.htmlElments.inventoryTypeField)
+        const damageFieldElement = document.querySelector(this.htmlElments.inventoryDamageField)
+        const submitElement = document.querySelector(this.htmlElments.inventoryAddBtn)
+        submitElement.onclick = () =>{
+            let uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2)
+            this.values.inventory[uniqueId] = {
+                type: typeFieldElement.value,
+                name: itemFieldElement.value,
+                damage: damageFieldElement.value === '' ? null : damageFieldElement.value 
+            }
+            this. _renderInventory()
+        }
+    }
+
+    _controlTabs() {
+        const currentActiveTab = document.querySelector(this.htmlElments.tabs + ' ' + this.htmlElments.tabActive)
+        document.querySelector('#' + currentActiveTab.dataset.panel).style.display = 'block'
         const tabsElement = document.querySelectorAll(this.htmlElments.tabs + ' li')
         const tabsPanel = document.querySelectorAll(this.htmlElments.tabPanel)
-        tabsElement.forEach(tab =>{
+        tabsElement.forEach(tab => {
             tab.onclick = () => {
-                const tabActiveClassNoSelector = this.htmlElments.tabActive.replace('.','')
+                const tabActiveClassNoSelector = this.htmlElments.tabActive.replace('.', '')
                 tabsElement.forEach(tab => tab.classList.remove(tabActiveClassNoSelector))
                 tabsPanel.forEach(panel => panel.style.display = 'none')
                 tab.classList.add(tabActiveClassNoSelector)
-                const panel = document.querySelector('#'+tab.dataset.panel)
+                const panel = document.querySelector('#' + tab.dataset.panel)
                 panel.style.display = 'block'
             }
         })
     }
 
-    _renderLevels(){
+    _renderLevels() {
         const parentElement = document.querySelector(this.htmlElments.level)
-        this._renderLevelList(parentElement,'level')
+        this._renderLevelList(parentElement, 'level')
         const generalLevelElement = document.querySelector(this.htmlElments.generalLevel)
         generalLevelElement.innerText = this.level
     }
 
-    _renderSkills(){
+    _renderSkills() {
         const parentElement = document.querySelector(this.htmlElments.skills)
-        this._renderLevelList(parentElement,'skills')
+        this._renderLevelList(parentElement, 'skills')
     }
 
     _increaseLevel(levels, level, step) {
@@ -108,5 +142,64 @@ class Character {
                     this[btn.dataset.type](btn.dataset.levels, btn.dataset.level, Number(btn.dataset.step))
                 })
         }, 100)
+    }
+}
+
+class DiceRoll {
+    diceOptions = [4, 6, 8, 10, 12, 20]
+    constructor(htmlElments) {
+        this.htmlElments = htmlElments
+    }
+
+    init() {
+        this._renderButtons()
+    }
+
+    _renderButtons() {
+        const resultField = document.querySelector(this.htmlElments.result)
+        const diceRollQtyField = document.querySelector(this.htmlElments.qty)
+        const parentElement = document.querySelector(this.htmlElments.menu)
+        const btnRendered = this.diceOptions.map(dice => `<button class="button btn-roll-dice" data-dice="${dice}">d${dice}</button>`).join('')
+        parentElement.innerHTML = btnRendered
+        setTimeout(() => {
+            const buttons = document.querySelectorAll('.btn-roll-dice')
+            buttons.forEach(btn =>
+                btn.onclick = () => {
+                    const dice = Number(btn.dataset.dice)
+                    const diceRoll = this.roll(Number(diceRollQtyField.value), dice)
+                    resultField.innerHTML = this._renderDiceRollResult(diceRoll, dice)
+                })
+        }, 100)
+    }
+
+    roll(qty, dice) {
+        const rolls = [...Array(Number(qty)).keys()].map(roll => {
+            const rollValue = (Math.floor(Math.random() * (Number(dice) - 1 + 1))) + 1
+            return Number(rollValue)
+        })
+        const totalResult = rolls.reduce(
+            (previousValue, currentValue) => previousValue + currentValue
+        )
+        return {
+            rolls,
+            totalResult
+        }
+    }
+
+    _renderDiceRoll(value, dice) {
+        let state = ''
+        if (value === 1) state = 'is-danger'
+        if (value === dice) state = 'is-success'
+        return `<span class="tag is-medium ${state}">${value}</span>`
+    }
+
+    _renderDiceRollResult(roll, dice) {
+        let outputHtml = ''
+        if (roll.rolls.length > 1) {
+            outputHtml = roll.rolls.map(value => this._renderDiceRoll(value, Number(dice))).join(' + ') + ' = ' + this._renderDiceRoll(roll.totalResult, 0)
+        } else {
+            outputHtml = this._renderDiceRoll(roll.totalResult, dice)
+        }
+        return outputHtml
     }
 }

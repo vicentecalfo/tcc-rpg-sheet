@@ -23,6 +23,7 @@
         </div>
     </section>
     <section class="section">
+
         <div class="container">
             <div class="columns">
                 <div class="column">
@@ -35,7 +36,7 @@
                 </div>
                 <div class="column is-two-thirds">
                     <h4 class="title is-4">Informações Gerais</h4>
-                    <div class="card">
+                    <div class="card is-shadowless">
                         <div class="card-content">
                             <div class="media">
                                 <div class="media-left">
@@ -51,25 +52,70 @@
                             </div>
                         </div>
                     </div>
+                    <div class="sheet-dice-menu mt-4">
+                        <div>
+                            <div class="control">
+                                <input id="dice-roll-qty" class="input" type="number" placeholder="" value="1"
+                                    min="1" />
+                            </div>
+                        </div>
+                        <div>
+                            <div class="buttons has-addons" id="dice-menu"></div>
+                        </div>
+                        <div>
+                            <div class="control" id="dice-roll-result">
+                            </div>
+                        </div>
+                    </div>
                     <div class="tabs mt-4">
                         <ul id="sheet-tabs">
-                            <li data-panel="sheet-inventory" class="is-active"><a>Inventário</a></li>
+                            <li data-panel="sheet-inventory" class="is-active"><a>Inventário (<span
+                                        class="sheet-inventory-total">0</span>)</a></li>
                             <li data-panel="sheet-features"><a>Talentos</a></li>
                         </ul>
                     </div>
                     <div id="sheet-inventory" class="tab-panel">
+                        <div class="sheet-inventory-add-form mb-4">
+                            <div>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Nome do item"
+                                        id="sheet-inventory-item-field">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="control">
+                                    <div class="select">
+                                        <select id="sheet-inventory-type-field">
+                                            <option>Tipo</option>
+                                            <option value="Arma">Arma</option>
+                                            <option value="Artefato">Artefato</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Dano"
+                                        id="sheet-inventory-damage-field">
+                                </div>
+                            </div>
+                            <div>
+                                <button class="button is-link" id="sheet-inventory-add-btn">Incluir</button>
+                            </div>
+                        </div>
                         <table class="table is-striped" id="sheet-table-inventory">
                             <thead>
                                 <tr>
                                     <th>Item</th>
                                     <th>Tipo</th>
                                     <th>Dano</th>
+                                    <th>&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
                     </div>
-                    <div id="sheet-features" class="tab-panel">gggg</div>
+                    <div id="sheet-features" class="tab-panel">Talentos</div>
                 </div>
             </div>
         </div>
@@ -113,25 +159,17 @@
         },
         'inventory': {
             1: {
-                'type': 'arma',
-                'damage': {
-                    'qty': 2,
-                    'dice': 'd6',
-                    'mod': 0
-                },
+                'type': 'Arma',
+                'damage': '2d6',
                 'name': 'Revólver Calibre 38',
             },
             2: {
-                'type': 'arma',
-                'damage': {
-                    'qty': 1,
-                    'dice': 'd4',
-                    'mod': '+1'
-                },
+                'type': 'Arma',
+                'damage': '1d4',
                 'name': 'Adaga',
             },
             3: {
-                'type': 'artefato',
+                'type': 'Artefato',
                 'name': 'Crucifixo de Madeira',
                 'damage': null,
             }
@@ -148,10 +186,23 @@
         tabs: '#sheet-tabs',
         tabPanel: '.tab-panel',
         tabActive: '.is-active',
-        tableInventory: '#sheet-table-inventory'
+        tableInventory: '#sheet-table-inventory',
+        inventoryItemField: "#sheet-inventory-item-field",
+        inventoryTypeField: "#sheet-inventory-type-field",
+        inventoryDamageField: "#sheet-inventory-damage-field",
+        inventoryAddBtn: "#sheet-inventory-add-btn",
+        inventoryTotal: '.sheet-inventory-total'
     }
     const character = new Character(characterInfo, characterHtmlSheet)
     character.init()
+
+    const diceHtmlSheet = {
+        menu: '#dice-menu',
+        qty: '#dice-roll-qty',
+        result: '#dice-roll-result'
+    }
+    const diceRoll = new DiceRoll(diceHtmlSheet)
+    diceRoll.init()
 </script>
 
 </html>
