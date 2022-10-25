@@ -1,0 +1,26 @@
+.avatar img{
+    border-radius: 50%;
+}
+
+.skill-list{
+}
+
+.skill-list li{
+    display: grid;
+    grid-template-columns: 1fr 45px auto;
+    grid-gap: 5px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.skill-list li input{
+    text-align: center;
+}
+
+.tab-panel{
+    display: none;
+}
+
+.table{
+    width:100%
+}

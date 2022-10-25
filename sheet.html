@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://kit.fontawesome.com/17044c3c3b.js" crossorigin="anonymous"></script>
+    <script src="./script.js"></script>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">
+                Ficha de Personagem
+            </h1>
+            <p class="subtitle">
+                Exemplo de ficha.
+            </p>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column">
+                    <h4 class="title is-4">Nível (<span id="sheet-level">0</span>)</h4>
+                    <ul class="skill-list" id="sheet-level-list">
+                    </ul>
+                    <h4 class="title is-4 mt-4">Perícias</h4>
+                    <ul class="skill-list" id="sheet-skill-list">
+                    </ul>
+                </div>
+                <div class="column is-two-thirds">
+                    <h4 class="title is-4">Informações Gerais</h4>
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-48x48 avatar" id="sheet-avatar">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <p class="title is-4" id="sheet-name"></p>
+                                    <p class="subtitle is-6" id="sheet-user"></p>
+                                </div>
+                            </div>
+                            <div class="content" id="sheet-bg">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tabs mt-4">
+                        <ul id="sheet-tabs">
+                            <li data-panel="sheet-inventory" class="is-active"><a>Inventário</a></li>
+                            <li data-panel="sheet-features"><a>Talentos</a></li>
+                        </ul>
+                    </div>
+                    <div id="sheet-inventory" class="tab-panel">
+                        <table class="table is-striped" id="sheet-table-inventory">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Tipo</th>
+                                    <th>Dano</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="sheet-features" class="tab-panel">gggg</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<script>
+    const characterInfo = {
+        'name': 'Rick Campbell',
+        'avatar': 'https://i.imgur.com/CX9jfe9.png',
+        'background': 'Mercenário e meio lunático, John Snow é um ex-militar americano que aceita qualquer missão desde que seja bem pago por isso.',
+        'user': 'John Doe',
+        'level': {
+            'Combatente': 0,
+            'Especialista': 0,
+            'Ocultista': 0
+        },
+        'skills': {
+            'Acrobacia': 0,
+            'Adrestramento': 0,
+            'Atletismo': 0,
+            'Atualidades': 0,
+            'Ciência': 0,
+            'Crime': 0,
+            'Diplomacia': 0,
+            'Enganação': 0,
+            'Fortitude': 0,
+            'Furtividade': 0,
+            'Intuição': 0,
+            'Investigação': 0,
+            'Medicina': 0,
+            'Ocultismo': 0,
+            'Percepção': 0,
+            'Pilotagem': 0,
+            'Reflexos': 0,
+            'Religião': 0,
+            'Sobrevivência': 0,
+            'Tática': 0,
+            'Tecnologia': 0,
+            'Vontade': 0
+        },
+        'inventory': {
+            1: {
+                'type': 'arma',
+                'damage': {
+                    'qty': 2,
+                    'dice': 'd6',
+                    'mod': 0
+                },
+                'name': 'Revólver Calibre 38',
+            },
+            2: {
+                'type': 'arma',
+                'damage': {
+                    'qty': 1,
+                    'dice': 'd4',
+                    'mod': '+1'
+                },
+                'name': 'Adaga',
+            },
+            3: {
+                'type': 'artefato',
+                'name': 'Crucifixo de Madeira',
+                'damage': null,
+            }
+        }
+    }
+    const characterHtmlSheet = {
+        name: '#sheet-name',
+        bg: '#sheet-bg',
+        user: '#sheet-user',
+        avatar: '#sheet-avatar',
+        level: '#sheet-level-list',
+        generalLevel: "#sheet-level",
+        skills: '#sheet-skill-list',
+        tabs: '#sheet-tabs',
+        tabPanel: '.tab-panel',
+        tabActive: '.is-active',
+        tableInventory: '#sheet-table-inventory'
+    }
+    const character = new Character(characterInfo, characterHtmlSheet)
+    character.init()
+</script>
+
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "tcc-rpg-sheet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicentecalfo/tcc-rpg-sheet.git"
+  },
+  "author": "Vicente Calfo <vicentecalfo@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vicentecalfo/tcc-rpg-sheet/issues"
+  },
+  "homepage": "https://github.com/vicentecalfo/tcc-rpg-sheet#readme",
+  "dependencies": {
+    "bulma": "^0.9.4",
+    "roll": "^1.3.1"
+  }
+}
